@@ -2,7 +2,7 @@
   "name": "kasir-es-teh",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd backend && npm install && cd ../frontend && npm install && npm run build",
+    "build": "cd backend && npm install && cd ../frontend && npm install --include=dev && npm run build",
     "start": "cd backend && node server.js"
   },
   "engines": {
