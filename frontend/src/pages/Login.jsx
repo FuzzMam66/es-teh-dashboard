@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { MdLocalCafe, MdVisibility, MdVisibilityOff, MdPlayArrow } from "react-icons/md";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -11,7 +11,8 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
       const res = await api.post("/auth/login", { username, password });
 
@@ -23,117 +24,69 @@ function Login() {
     }
   };
 
+  const handleDemoLogin = () => {
+    setUsername("admin");
+    setPassword("admin123");
+    // Secara opsional bisa langsung trigger login, tapi mengisi form lebih jelas bagi user
+  };
+
   return (
-    <div className="h-screen flex justify-center items-center" style={{backgroundColor: '#5CBFEA'}}>
-      <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        padding: '48px',
-        borderRadius: '24px',
-        width: '420px',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}>
-        <div style={{textAlign: 'center', marginBottom: '40px'}}>
-          <div style={{fontSize: '64px', marginBottom: '20px', filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))'}}> </div>
-          <h1 style={{
-            fontSize: '32px',
-            fontWeight: '800',
-            background: 'linear-gradient(135deg, #1f2937, #4b5563)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            margin: '0 0 12px 0',
-            letterSpacing: '-0.025em'
-          }}>Kasir Es Teh</h1>
-          <p style={{fontSize: '16px', color: '#6b7280', margin: 0, fontWeight: '400'}}>Silakan masuk ke akun Anda</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#f6f7f8] font-sans text-slate-900">
+      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl w-full max-w-md flex flex-col gap-6">
+        <div className="text-center flex flex-col items-center gap-3">
+          <div className="w-16 h-16 bg-[#136dec] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 mb-2">
+            <MdLocalCafe className="text-4xl" />
+          </div>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900">
+            Kasir Es Teh
+          </h1>
+          <p className="text-slate-500 text-sm font-medium">
+            Silakan masuk untuk melanjutkan
+          </p>
         </div>
 
         {error && (
-          <div style={{
-            background: 'linear-gradient(135deg, #fef2f2, #fee2e2)',
-            border: '1px solid #fca5a5',
-            color: '#dc2626',
-            padding: '16px 20px',
-            borderRadius: '12px',
-            marginBottom: '24px',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>
+          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-sm font-bold text-center">
             {error}
           </div>
         )}
 
-        <div style={{marginBottom: '32px'}}>
-          <div style={{marginBottom: '24px'}}>
-            <label style={{display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px'}}>Username</label>
+        <div className="flex flex-col gap-5">
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Username
+            </label>
             <input
               type="text"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-[#136dec] transition-all outline-none"
               placeholder="Masukkan username"
-              style={{
-                width: '100%',
-                padding: '16px 20px',
-                border: '2px solid #e5e7eb',
-                borderRadius: '12px',
-                fontSize: '16px',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                transition: 'all 0.3s ease',
-                outline: 'none'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6';
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e5e7eb';
-                e.target.style.boxShadow = 'none';
-              }}
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
           <div>
-            <label style={{display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px'}}>Password</label>
-            <div style={{position: 'relative'}}>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Password
+            </label>
+            <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-[#136dec] transition-all outline-none pr-12"
                 placeholder="Masukkan password"
-                style={{
-                  width: '100%',
-                  padding: '16px 50px 16px 20px',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  transition: 'all 0.3s ease',
-                  outline: 'none'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.boxShadow = 'none';
-                }}
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  right: '16px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '18px',
-                  color: '#6b7280',
-                  padding: '4px'
-                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
               >
-                {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                {showPassword ? (
+                  <MdVisibilityOff size={20} />
+                ) : (
+                  <MdVisibility size={20} />
+                )}
               </button>
             </div>
           </div>
@@ -141,31 +94,22 @@ function Login() {
 
         <button
           onClick={handleLogin}
-          style={{
-            width: '100%',
-            background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-            color: 'white',
-            padding: '16px 24px',
-            borderRadius: '12px',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: '700',
-            boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.4)',
-            transition: 'all 0.3s ease',
-            transform: 'translateY(0)'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-2px) scale(1.02)';
-            e.target.style.boxShadow = '0 25px 30px -5px rgba(59, 130, 246, 0.5)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0) scale(1)';
-            e.target.style.boxShadow = '0 20px 25px -5px rgba(59, 130, 246, 0.4)';
-          }}
+          className="w-full bg-[#136dec] text-white py-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
         >
           Masuk
         </button>
+
+        <button
+          onClick={handleDemoLogin}
+          className="w-full bg-white border-2 border-[#136dec] text-[#136dec] py-3.5 rounded-xl font-bold hover:bg-blue-50 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+        >
+          <MdPlayArrow size={20} />
+          Coba Demo (Isi Otomatis)
+        </button>
+
+        <p className="text-center text-xs text-slate-400 font-medium mt-4">
+          © 20255 Es Teh Kasir
+        </p>
       </div>
     </div>
   );

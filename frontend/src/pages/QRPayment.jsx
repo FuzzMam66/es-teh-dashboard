@@ -1,148 +1,84 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { MdQrCode2, MdDone, MdArrowBack } from "react-icons/md";
 
 function QRPayment() {
   const navigate = useNavigate();
   const location = useLocation();
   const { totalHarga, transactionId } = location.state || {};
   const [confirmed, setConfirmed] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const handleConfirm = () => {
     setConfirmed(true);
     setTimeout(() => {
-      alert("Pembayaran berhasil dikonfirmasi!");
-      navigate("/dashboard");
-    }, 1000);
+      setShowToast(true);
+      setTimeout(() => navigate("/dashboard"), 2000);
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#5CBFEA'}}>
-      <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '24px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        padding: '48px',
-        maxWidth: '500px',
-        width: '100%',
-        margin: '0 20px',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}>
-        <div style={{textAlign: 'center'}}>
-          <h1 style={{
-            fontSize: '32px',
-            fontWeight: '800',
-            marginBottom: '32px',
-            background: 'linear-gradient(135deg, #1f2937, #4b5563)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>Pembayaran QRIS</h1>
-          
-          {/* QR Code Placeholder */}
-          <div style={{
-            background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-            width: '280px',
-            height: '280px',
-            margin: '0 auto 32px auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '20px',
-            border: '2px solid #d1d5db',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-          }}>
-            <div style={{textAlign: 'center'}}>
-              <div style={{fontSize: '80px', marginBottom: '12px', filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'}}>📱</div>
-              <div style={{fontSize: '16px', color: '#6b7280', fontWeight: '600'}}>QR Code</div>
-            </div>
-          </div>
-          
-          <div style={{marginBottom: '32px'}}>
-            <div style={{fontSize: '18px', fontWeight: '600', marginBottom: '12px', color: '#374151'}}>Total Pembayaran</div>
-            <div style={{
-              fontSize: '36px',
-              fontWeight: '800',
-              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              Rp {totalHarga?.toLocaleString()}
-            </div>
-          </div>
-          
-          <div style={{
-            fontSize: '14px',
-            color: '#6b7280',
-            marginBottom: '32px',
-            padding: '12px 16px',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            borderRadius: '8px',
-            border: '1px solid #93c5fd'
-          }}>
-            🏷️ ID Transaksi: {transactionId}
-          </div>
-          
-          <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-            <button
-              onClick={handleConfirm}
-              disabled={confirmed}
-              style={{
-                width: '100%',
-                background: confirmed ? 'linear-gradient(135deg, #10b981, #047857)' : 'linear-gradient(135deg, #10b981, #047857)',
-                color: 'white',
-                padding: '16px 24px',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: confirmed ? 'not-allowed' : 'pointer',
-                fontSize: '16px',
-                fontWeight: '700',
-                boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.4)',
-                transition: 'all 0.3s ease',
-                opacity: confirmed ? 0.8 : 1
-              }}
-              onMouseOver={(e) => {
-                if (!confirmed) {
-                  e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                  e.target.style.boxShadow = '0 15px 20px -3px rgba(16, 185, 129, 0.5)';
-                }
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = 'translateY(0) scale(1)';
-                e.target.style.boxShadow = '0 10px 15px -3px rgba(16, 185, 129, 0.4)';
-              }}
-            >
-              {confirmed ? "✓ Dikonfirmasi" : "🚀 Konfirmasi Pembayaran"}
-            </button>
-            
-            <button
-              onClick={() => navigate("/penjualan")}
-              style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #6b7280, #4b5563)',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-                boxShadow: '0 10px 15px -3px rgba(107, 114, 128, 0.4)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseOver={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 15px 20px -3px rgba(107, 114, 128, 0.5)';
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 10px 15px -3px rgba(107, 114, 128, 0.4)';
-              }}
-            >
-              ← Kembali ke Penjualan
-            </button>
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#f6f7f8] font-sans">
+      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl w-full max-w-md flex flex-col items-center gap-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-black tracking-tight text-slate-900">
+            Pembayaran QRIS
+          </h1>
+          <p className="text-slate-500 text-sm font-medium mt-2">
+            Silakan scan QR Code di bawah ini.
+          </p>
+        </div>
+
+        {/* QR Code Placeholder */}
+        <div className="bg-white p-4 rounded-2xl border-4 border-slate-200 shadow-inner">
+          <MdQrCode2 className="text-[240px] text-slate-800" />
+        </div>
+
+        <div className="text-center w-full bg-blue-50 border border-blue-100 rounded-xl p-4">
+          <p className="text-sm font-medium text-slate-500">Total Pembayaran</p>
+          <p className="text-4xl font-black text-[#136dec]">
+            Rp {totalHarga?.toLocaleString()}
+          </p>
+        </div>
+
+        <div className="text-center text-xs text-slate-400 font-medium">
+          ID Transaksi:{" "}
+          <span className="font-bold text-slate-600">{transactionId}</span>
+        </div>
+
+        <div className="w-full flex flex-col gap-3">
+          <button
+            onClick={handleConfirm}
+            disabled={confirmed}
+            className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-emerald-500/25 hover:bg-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {confirmed ? (
+              <>
+                <MdDone /> Dikonfirmasi
+              </>
+            ) : (
+              "Konfirmasi Pembayaran"
+            )}
+          </button>
+
+          <button
+            onClick={() => navigate("/penjualan")}
+            className="w-full flex items-center justify-center gap-2 bg-white border border-slate-200 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-all"
+          >
+            <MdArrowBack />
+            Kembali ke Penjualan
+          </button>
         </div>
       </div>
+
+      {showToast && (
+        <div className="fixed top-10 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-50 animate-fade-in">
+          <div className="bg-white/20 p-1.5 rounded-full">
+            <MdDone className="text-xl" />
+          </div>
+          <span className="font-bold">Pembayaran Berhasil Dikonfirmasi!</span>
+        </div>
+      )}
     </div>
   );
 }

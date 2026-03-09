@@ -1,23 +1,41 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { MdShoppingCart, MdRestaurantMenu, MdBarChart, MdAttachMoney, MdLogout, MdRefresh, MdArrowForward } from "react-icons/md";
+import {
+  MdLocalCafe,
+  MdSearch,
+  MdLogout,
+  MdCalendarToday,
+  MdAdd,
+  MdReceiptLong,
+  MdTrendingUp,
+  MdPayments,
+  MdShoppingBasket,
+  MdTrendingDown,
+  MdPointOfSale,
+  MdRestaurantMenu,
+  MdBarChart,
+  MdAccountBalanceWallet,
+  MdIcecream,
+  MdCookie,
+  MdInventory,
+  MdEdit,
+} from "react-icons/md";
+import Navbar from "../components/Navbar.jsx";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     total_transaksi: 0,
     total_pendapatan: 0,
-    total_item: 0
+    total_item: 0,
   });
+  const [topProducts, setTopProducts] = useState([]);
 
   const fetchStats = async () => {
     try {
-      console.log("Fetching dashboard stats...");
       const res = await api.get("/api/dashboard/stats");
-      console.log("Dashboard stats response:", res.data);
       if (res.data.status === "success") {
-        console.log("Setting stats:", res.data.data);
         setStats(res.data.data);
       }
     } catch (err) {
@@ -25,246 +43,195 @@ function Dashboard() {
     }
   };
 
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const res = await api.get("/api/dashboard/stats");
-        if (res.data.status === "success") {
-          setStats(res.data.data);
-        }
-      } catch (err) {
-        console.error("Error fetching stats:", err);
+  const fetchTopProducts = async () => {
+    try {
+      const res = await api.get("/api/dashboard/top-products");
+      if (res.data.status === "success") {
+        setTopProducts(res.data.data);
       }
-    };
-    loadStats();
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
+    } catch (err) {
+      console.error("Error fetching top products:", err);
+    }
   };
 
-  const menuItems = [
-    {
-      title: "Penjualan",
-      description: "Kelola transaksi penjualan",
-      icon: <MdShoppingCart size={48} />,
-      path: "/penjualan",
-      color: "bg-blue-500"
-    },
-    {
-      title: "Kelola Menu",
-      description: "Tambah dan edit menu",
-      icon: <MdRestaurantMenu size={48} />,
-      path: "/kelola-menu",
-      color: "bg-green-500"
-    },
-    {
-      title: "Laporan Harian",
-      description: "Lihat laporan penjualan harian",
-      icon: <MdBarChart size={48} />,
-      path: "/laporan-harian",
-      color: "bg-purple-500"
-    },
-    {
-      title: "Keuangan",
-      description: "Kelola keuangan dan pengeluaran",
-      icon: <MdAttachMoney size={48} />,
-      path: "/keuangan",
-      color: "bg-yellow-500"
-    }
-  ];
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStats();
+    fetchTopProducts();
+  }, []);
+
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
   return (
-    <div className="min-h-screen" style={{backgroundColor: '#5CBFEA'}}>
-      {/* Header */}
-      <div style={{backgroundColor: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', padding: '32px'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-            <div style={{fontSize: '40px', filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'}}></div>
-            <div>
-              <h1 style={{fontSize: '28px', fontWeight: '700', background: 'linear-gradient(135deg, #1f2937, #4b5563)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0, letterSpacing: '-0.025em'}}>Dashboard Kasir Es Teh</h1>
-              <p style={{fontSize: '16px', color: '#6b7280', margin: '8px 0 0 0', fontWeight: '400'}}>Kelola bisnis es teh Anda dengan mudah</p>
-            </div>
+    <div className="bg-[#f6f7f8] text-slate-900 min-h-screen font-sans">
+      <Navbar />
+
+      {/* Main Content Area */}
+      <main className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
+              Dashboard Kasir Es Teh
+            </h1>
+            <p className="text-slate-500 text-lg">
+              Selamat datang kembali! Berikut adalah performa bisnis Anda hari
+              ini.
+            </p>
           </div>
-          <button
-            onClick={handleLogout}
-            style={{
-              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-              color: 'white',
-              padding: '12px 32px',
-              borderRadius: '12px',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: '600',
-              fontSize: '14px',
-              boxShadow: '0 20px 25px -5px rgba(239, 68, 68, 0.4), 0 10px 10px -5px rgba(239, 68, 68, 0.2)',
-              transition: 'all 0.3s ease',
-              transform: 'translateY(0)'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px) scale(1.05)';
-              e.target.style.boxShadow = '0 25px 30px -5px rgba(239, 68, 68, 0.5), 0 15px 15px -5px rgba(239, 68, 68, 0.3)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 20px 25px -5px rgba(239, 68, 68, 0.4), 0 10px 10px -5px rgba(239, 68, 68, 0.2)';
-            }}
-          >
-            <MdLogout size={16} style={{marginRight: '8px'}} /> Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div style={{maxWidth: '1200px', margin: '0 auto', padding: '24px'}}>
-        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px', marginBottom: '48px'}}>
-          {menuItems.map((item, index) => {
-            const colors = {
-              'bg-blue-500': 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-              'bg-green-500': 'linear-gradient(135deg, #10b981, #047857)',
-              'bg-purple-500': 'linear-gradient(135deg, #8b5cf6, #5b21b6)',
-              'bg-yellow-500': 'linear-gradient(135deg, #f59e0b, #d97706)'
-            };
-            return (
-              <div
-                key={index}
-                onClick={() => navigate(item.path)}
-                style={{
-                  background: colors[item.color],
-                  color: 'white',
-                  padding: '32px',
-                  borderRadius: '20px',
-                  cursor: 'pointer',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                  transition: 'all 0.3s ease',
-                  transform: 'translateY(0)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  backdropFilter: 'blur(10px)'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-                }}
-              >
-                <div style={{fontSize: '48px', marginBottom: '20px', filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'}}>{item.icon}</div>
-                <h3 style={{fontSize: '22px', fontWeight: '700', marginBottom: '12px', letterSpacing: '-0.025em'}}>{item.title}</h3>
-                <p style={{fontSize: '15px', opacity: 0.9, lineHeight: '1.6', marginBottom: '24px'}}>{item.description}</p>
-                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '18px',
-                    fontWeight: 'bold'
-                  }}>
-                    <MdArrowForward size={18} />
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        }</div>
-
-        {/* Quick Stats */}
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '24px',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          padding: '40px',
-          border: '1px solid rgba(255, 255, 255, 0.2)'
-        }}>
-          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px'}}>
-            <div>
-              <h2 style={{
-                fontSize: '28px',
-                fontWeight: '700',
-                background: 'linear-gradient(135deg, #1f2937, #4b5563)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                margin: 0,
-                letterSpacing: '-0.025em'
-              }}>Ringkasan Hari Ini</h2>
-              <p style={{fontSize: '16px', color: '#6b7280', margin: '8px 0 0 0'}}>Statistik penjualan terkini</p>
-            </div>
+          <div className="flex gap-3">
+            <button className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-all">
+              <MdCalendarToday className="text-lg" />
+              <span>
+                {new Date().toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
+            </button>
             <button
-              onClick={fetchStats}
-              style={{
-                background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-                boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.4)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseOver={(e) => {
-                e.target.style.transform = 'translateY(-2px) scale(1.05)';
-                e.target.style.boxShadow = '0 15px 20px -3px rgba(59, 130, 246, 0.5)';
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = 'translateY(0) scale(1)';
-                e.target.style.boxShadow = '0 10px 15px -3px rgba(59, 130, 246, 0.4)';
-              }}
+              onClick={() => navigate("/penjualan")}
+              className="flex items-center gap-2 bg-[#136dec] text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-all cursor-pointer"
             >
-              <MdRefresh size={16} style={{marginRight: '8px'}} /> Refresh
+              <MdAdd className="text-lg" />
+              <span>Transaksi Baru</span>
             </button>
           </div>
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px'}}>
-            <div style={{
-              textAlign: 'center',
-              padding: '32px 24px',
-              background: 'linear-gradient(135deg, #dbeafe, #bfdbfe)',
-              borderRadius: '16px',
-              border: '1px solid #93c5fd',
-              boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.1)'
-            }}>
-              <div style={{fontSize: '36px', fontWeight: '800', color: '#2563eb', marginBottom: '12px'}}>{stats.total_transaksi}</div>
-              <div style={{color: '#374151', fontWeight: '600', fontSize: '16px', marginBottom: '8px'}}>Transaksi</div>
-              <div style={{fontSize: '12px', color: '#2563eb', fontWeight: '500'}}>Hari ini</div>
-            </div>
-            <div style={{
-              textAlign: 'center',
-              padding: '32px 24px',
-              background: 'linear-gradient(135deg, #d1fae5, #a7f3d0)',
-              borderRadius: '16px',
-              border: '1px solid #6ee7b7',
-              boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.1)'
-            }}>
-              <div style={{fontSize: '36px', fontWeight: '800', color: '#059669', marginBottom: '12px'}}>
-                Rp {parseFloat(stats.total_pendapatan || 0).toLocaleString()}
+        </div>
+
+        {/* Stats Section (Ringkasan Hari Ini) */}
+        <section className="mb-12">
+          <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 px-1">
+            Ringkasan Hari Ini
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Stat Card 1 */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">
+              <div className="flex justify-between items-start">
+                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                  <MdReceiptLong className="text-2xl" />
+                </div>
               </div>
-              <div style={{color: '#374151', fontWeight: '600', fontSize: '16px', marginBottom: '8px'}}>Pendapatan</div>
-              <div style={{fontSize: '12px', color: '#059669', fontWeight: '500'}}>Total</div>
+              <div>
+                <p className="text-slate-500 text-sm font-medium mb-1">
+                  Total Transaksi
+                </p>
+                <h3 className="text-3xl font-extrabold text-slate-900">
+                  {stats.total_transaksi}
+                </h3>
+              </div>
+              <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-500"></div>
+              </div>
             </div>
-            <div style={{
-              textAlign: 'center',
-              padding: '32px 24px',
-              background: 'linear-gradient(135deg, #e9d5ff, #d8b4fe)',
-              borderRadius: '16px',
-              border: '1px solid #c084fc',
-              boxShadow: '0 10px 15px -3px rgba(139, 92, 246, 0.1)'
-            }}>
-              <div style={{fontSize: '36px', fontWeight: '800', color: '#7c3aed', marginBottom: '12px'}}>{stats.total_item}</div>
-              <div style={{color: '#374151', fontWeight: '600', fontSize: '16px', marginBottom: '8px'}}>Item Terjual</div>
-              <div style={{fontSize: '12px', color: '#7c3aed', fontWeight: '500'}}>Unit</div>
+
+            {/* Stat Card 2 */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">
+              <div className="flex justify-between items-start">
+                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                  <MdPayments className="text-2xl" />
+                </div>
+              </div>
+              <div>
+                <p className="text-slate-500 text-sm font-medium mb-1">
+                  Total Pendapatan
+                </p>
+                <h3 className="text-3xl font-extrabold text-slate-900">
+                  {formatRupiah(stats.total_pendapatan)}
+                </h3>
+              </div>
+              <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500"></div>
+              </div>
+            </div>
+
+            {/* Stat Card 3 */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">
+              <div className="flex justify-between items-start">
+                <div className="p-3 bg-orange-50 text-orange-600 rounded-xl">
+                  <MdShoppingBasket className="text-2xl" />
+                </div>
+              </div>
+              <div>
+                <p className="text-slate-500 text-sm font-medium mb-1">
+                  Total Item Terjual
+                </p>
+                <h3 className="text-3xl font-extrabold text-slate-900">
+                  {stats.total_item}
+                </h3>
+              </div>
+              <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden">
+                <div className="h-full bg-orange-500"></div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* Secondary Row: Top Selling & Recent Activities */}
+        <section className="mt-12 grid grid-cols-1 gap-8">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-slate-50 flex justify-between items-center">
+              <h3 className="font-bold text-slate-900">Produk Terlaris</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-wider">
+                  <tr>
+                    <th className="px-6 py-3">Nama Produk</th>
+                    <th className="px-6 py-3">Kategori</th>
+                    <th className="px-6 py-3 text-center">Terjual</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {topProducts.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className="px-6 py-8 text-center text-slate-500 italic"
+                      >
+                        Belum ada menu
+                      </td>
+                    </tr>
+                  ) : (
+                    topProducts.map((product, index) => (
+                      <tr
+                        key={index}
+                        className="hover:bg-slate-50/50 transition-colors"
+                      >
+                        <td className="px-6 py-4 flex items-center gap-3">
+                          <span className="font-semibold text-slate-800">
+                            {product.nama_menu}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-500">
+                          {product.nama_series || "-"}
+                        </td>
+                        <td className="px-6 py-4 text-center font-bold">
+                          {product.total_terjual}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer Meta */}
+      <footer className="py-10 border-t border-slate-100 text-center">
+        <p className="text-slate-400 text-xs font-medium">
+          © 2026 Es Teh Kasir. Dashboard Enterprise Edition.
+        </p>
+      </footer>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import Navbar from "../components/Navbar.jsx";
+import { MdLocalCafe, MdShoppingCart, MdAdd, MdRemove, MdArrowBack, MdImageNotSupported, MdShoppingBag } from "react-icons/md";
 
 function Penjualan() {
   const navigate = useNavigate();
@@ -8,8 +10,6 @@ function Penjualan() {
   const [menu, setMenu] = useState([]);
   const [selectedSeries, setSelectedSeries] = useState("");
   const [cart, setCart] = useState([]);
-
-
 
   const fetchMenu = async (seriesId = "") => {
     try {
@@ -100,239 +100,65 @@ function Penjualan() {
   };
 
   return (
-    <div className="min-h-screen" style={{backgroundColor: '#5CBFEA'}}>
-      {/* Header */}
-      <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-        padding: '32px'
-      }}>
-        <div style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
-          <button
-            onClick={() => navigate("/dashboard")}
-            style={{
-              background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '12px',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: '600',
-              fontSize: '14px',
-              boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.4)',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px) scale(1.05)';
-              e.target.style.boxShadow = '0 15px 20px -3px rgba(59, 130, 246, 0.5)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 10px 15px -3px rgba(59, 130, 246, 0.4)';
-            }}
-          >
-            ← Kembali
-          </button>
-          <div>
-            <h1 style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              background: 'linear-gradient(135deg, #1f2937, #4b5563)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              margin: 0,
-              letterSpacing: '-0.025em'
-            }}>Penjualan</h1>
-            <p style={{fontSize: '16px', color: '#6b7280', margin: '4px 0 0 0'}}>Kelola transaksi penjualan</p>
-          </div>
-        </div>
-      </div>
+    <div className="bg-[#f6f7f8] min-h-screen font-sans">
+      <Navbar />
 
-      <div className="container mx-auto p-6 flex gap-6">
+      <main className="pt-24 pb-12 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         {/* Menu Section */}
-        <div className="flex-1">
+        <div className="flex-1 space-y-8">
           {/* Filter Series */}
-          <div style={{marginBottom: '40px'}}>
-            <div style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-              padding: '32px',
-              border: '1px solid rgba(255, 255, 255, 0.2)'
-            }}>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#374151',
-                marginBottom: '16px'
-              }}>Filter Kategori</label>
-              <select
-                value={selectedSeries}
-                onChange={(e) => handleSeriesChange(e.target.value)}
-                style={{
-                  width: '100%',
-                  maxWidth: '320px',
-                  padding: '16px 20px',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  transition: 'all 0.3s ease',
-                  outline: 'none',
-                  cursor: 'pointer'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.boxShadow = 'none';
-                }}
-              >
-                <option value="">Semua Series</option>
-                {series.map(s => (
-                  <option key={s.id_series} value={s.id_series}>
-                    {s.nama_series}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+            <label className="block text-sm font-bold text-slate-700 mb-2">Filter Kategori</label>
+            <select
+              value={selectedSeries}
+              onChange={(e) => handleSeriesChange(e.target.value)}
+              className="w-full max-w-xs bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-[#136dec] transition-all outline-none"
+            >
+              <option value="">Semua Series</option>
+              {series.map(s => (
+                <option key={s.id_series} value={s.id_series}>
+                  {s.nama_series}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Menu Grid */}
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 250px))', gap: '32px', justifyContent: 'center'}}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {menu.map(item => (
-              <div 
-                key={item.id_menu} 
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  borderRadius: '20px',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-                  padding: '16px',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  transition: 'all 0.3s ease',
-                  transform: 'translateY(0)',
-                  minHeight: '300px'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1)';
-                }}
-              >
-                <div style={{
-                  height: '200px',
-                  width: '100%',
-                  background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                  borderRadius: '12px',
-                  marginBottom: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  overflow: 'hidden'
-                }}>
+              <div key={item.id_menu} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col transition-all hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="h-48 w-full bg-slate-100 flex items-center justify-center text-slate-300">
                   {item.gambar ? (
-                    <img 
-                      src={item.gambar.startsWith('/uploads/') ? `http://localhost:3001${item.gambar}` : item.gambar} 
+                    <img
+                      src={item.gambar.startsWith('/uploads/') ? `http://localhost:3001${item.gambar}` : item.gambar}
                       alt={item.nama_menu}
-                      style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px'}}
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span style={{fontSize: '48px', color: '#9ca3af'}}>📷</span>
+                    <MdImageNotSupported size={48} />
                   )}
                 </div>
-                <h3 style={{fontWeight: '700', fontSize: '20px', marginBottom: '12px', color: '#1f2937'}}>{item.nama_menu}</h3>
-                <p style={{color: '#2563eb', fontWeight: '700', marginBottom: '24px', fontSize: '18px'}}>
-                  Rp {item.harga.toLocaleString()}
-                </p>
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                  <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+                <div className="p-4 flex flex-col flex-grow">
+                  <h3 className="font-bold text-slate-800 text-lg mb-1 flex-grow">{item.nama_menu}</h3>
+                  <p className="text-[#136dec] font-black text-xl mb-4">
+                    Rp {item.harga.toLocaleString()}
+                  </p>
+                  <div className="flex items-center justify-between gap-2">
                     <button
                       onClick={() => removeFromCart(item.id_menu)}
                       disabled={getItemCount(item.id_menu) === 0}
-                      style={{
-                        background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-                        color: 'white',
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '50%',
-                        border: 'none',
-                        cursor: getItemCount(item.id_menu) === 0 ? 'not-allowed' : 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        boxShadow: '0 10px 15px -3px rgba(239, 68, 68, 0.4)',
-                        transition: 'all 0.3s ease',
-                        opacity: getItemCount(item.id_menu) === 0 ? 0.5 : 1
-                      }}
-                      onMouseOver={(e) => {
-                        if (getItemCount(item.id_menu) > 0) {
-                          e.target.style.transform = 'scale(1.1)';
-                          e.target.style.boxShadow = '0 15px 20px -3px rgba(239, 68, 68, 0.5)';
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.transform = 'scale(1)';
-                        e.target.style.boxShadow = '0 10px 15px -3px rgba(239, 68, 68, 0.4)';
-                      }}
+                      className="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-600 rounded-lg font-bold text-lg hover:bg-red-100 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      -
+                      <MdRemove />
                     </button>
-                    <span style={{
-                      width: '60px',
-                      textAlign: 'center',
-                      fontWeight: '700',
-                      fontSize: '18px',
-                      backgroundColor: '#f3f4f6',
-                      padding: '12px 8px',
-                      borderRadius: '12px',
-                      border: '2px solid #e5e7eb'
-                    }}>
+                    <span className="flex-1 text-center font-bold text-slate-800 text-lg">
                       {getItemCount(item.id_menu)}
                     </span>
                     <button
                       onClick={() => addToCart(item)}
-                      style={{
-                        background: 'linear-gradient(135deg, #10b981, #047857)',
-                        color: 'white',
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '50%',
-                        border: 'none',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.4)',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseOver={(e) => {
-                        e.target.style.transform = 'scale(1.1)';
-                        e.target.style.boxShadow = '0 15px 20px -3px rgba(16, 185, 129, 0.5)';
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.transform = 'scale(1)';
-                        e.target.style.boxShadow = '0 10px 15px -3px rgba(16, 185, 129, 0.4)';
-                      }}
+                      className="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-600 rounded-lg font-bold text-lg hover:bg-blue-100 hover:text-blue-600 transition-colors"
                     >
-                      +
+                      <MdAdd />
                     </button>
                   </div>
                 </div>
@@ -342,103 +168,63 @@ function Penjualan() {
         </div>
 
         {/* Cart Section */}
-        <div style={{
-          width: '400px',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '20px',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-          padding: '32px',
-          height: 'fit-content',
-          border: '1px solid rgba(255, 255, 255, 0.2)'
-        }}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px'}}>
-            <span style={{fontSize: '28px'}}></span>
-            <h2 style={{fontSize: '24px', fontWeight: '700', color: '#1f2937', margin: 0}}>Keranjang</h2>
-          </div>
-          
-          {cart.length === 0 ? (
-            <div style={{textAlign: 'center', padding: '48px 0'}}>
-              <div style={{fontSize: '64px', marginBottom: '20px'}}></div>
-              <p style={{color: '#6b7280', fontSize: '18px', fontWeight: '500', margin: '0 0 8px 0'}}>Keranjang kosong</p>
-              <p style={{fontSize: '14px', color: '#9ca3af', margin: 0}}>Pilih menu untuk memulai</p>
+        <div className="w-full lg:w-96">
+          <div className="sticky top-24 bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <div className="p-6 border-b border-slate-100 flex items-center gap-3">
+              <MdShoppingCart className="text-2xl text-[#136dec]" />
+              <h2 className="text-xl font-bold text-slate-900">Keranjang</h2>
             </div>
-          ) : (
-            <>
-              <div style={{marginBottom: '32px', maxHeight: '300px', overflowY: 'auto'}}>
-                {cart.map(item => (
-                  <div key={item.id_menu} style={{
-                    background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)',
-                    padding: '20px',
-                    borderRadius: '16px',
-                    border: '1px solid #e2e8f0',
-                    marginBottom: '16px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}>
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-                      <div style={{flex: 1}}>
-                        <div style={{fontWeight: '600', color: '#1f2937', fontSize: '16px', marginBottom: '4px'}}>{item.nama_menu}</div>
-                        <div style={{fontSize: '14px', color: '#6b7280'}}>
+
+            {cart.length === 0 ? (
+              <div className="text-center p-10">
+                <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MdShoppingBag className="text-4xl text-slate-400" />
+                </div>
+                <p className="text-slate-600 font-semibold">Keranjang kosong</p>
+                <p className="text-slate-400 text-sm">Pilih menu untuk memulai transaksi</p>
+              </div>
+            ) : (
+              <>
+                <div className="p-4 space-y-3 max-h-80 overflow-y-auto">
+                  {cart.map(item => (
+                    <div key={item.id_menu} className="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                      <div className="flex-1">
+                        <div className="font-semibold text-slate-800 text-sm">{item.nama_menu}</div>
+                        <div className="text-xs text-slate-500">
                           {item.jumlah} x Rp {item.harga.toLocaleString()}
                         </div>
                       </div>
-                      <div style={{fontWeight: '700', color: '#2563eb', fontSize: '16px'}}>
+                      <div className="font-bold text-slate-800 text-sm">
                         Rp {(item.harga * item.jumlah).toLocaleString()}
                       </div>
                     </div>
+                  ))}
+                </div>
+
+                <div className="p-6 bg-slate-50/50 border-t border-slate-100 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 font-medium text-sm">Total Item:</span>
+                    <span className="font-bold text-slate-800 text-sm">{getTotalItems()}</span>
                   </div>
-                ))}
-              </div>
-              
-              <div style={{
-                background: 'linear-gradient(135deg, #dbeafe, #bfdbfe)',
-                padding: '24px',
-                borderRadius: '16px',
-                border: '1px solid #93c5fd'
-              }}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-                  <span style={{color: '#374151', fontWeight: '600', fontSize: '16px'}}>Total Item:</span>
-                  <span style={{fontWeight: '700', color: '#2563eb', fontSize: '16px'}}>{getTotalItems()}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 font-medium text-sm">Total Harga:</span>
+                    <span className="font-black text-xl text-[#136dec]">
+                      Rp {getTotalPrice().toLocaleString()}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={handleCheckout}
+                    className="w-full bg-[#136dec] text-white py-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200"
+                  >
+                    Checkout
+                  </button>
                 </div>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
-                  <span style={{color: '#374151', fontWeight: '600', fontSize: '16px'}}>Total Harga:</span>
-                  <span style={{fontWeight: '800', fontSize: '20px', color: '#2563eb'}}>
-                    Rp {getTotalPrice().toLocaleString()}
-                  </span>
-                </div>
-                
-                <button
-                  onClick={handleCheckout}
-                  style={{
-                    width: '100%',
-                    background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-                    color: 'white',
-                    padding: '16px 24px',
-                    borderRadius: '12px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.4)',
-                    transition: 'all 0.3s ease',
-                    transform: 'translateY(0)'
-                  }}
-                  onMouseOver={(e) => {
-                    e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                    e.target.style.boxShadow = '0 25px 30px -5px rgba(59, 130, 246, 0.5)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 20px 25px -5px rgba(59, 130, 246, 0.4)';
-                  }}
-                >
-                  Checkout
-                </button>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
